@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,8 +25,12 @@ namespace WordTypePracticeLite {
     /// </summary>
     public partial class MainWindow : Window {
         #region 字段
-        static readonly string defaultWordListFile = "TPWordList.txt";
-        public int seekWordIndex {
+        static readonly private Random rnd = new Random();
+        static readonly private SolidColorBrush colorTypeReady = new SolidColorBrush(Color.FromRgb(0xf9, 0xc5, 0x3a));
+        static readonly private SolidColorBrush colorTypeStatic = new SolidColorBrush(Color.FromRgb(0x15, 0xb9, 0x79));
+        static readonly private SolidColorBrush colorTyping = new SolidColorBrush(Color.FromRgb(0xbd, 0x2f, 0x54));
+        private string currentWordListFile;
+        private int seekWordIndex {
             get {
                 return (int)this.sliderSeekWordIndex.Value;
             }
@@ -56,29 +62,19 @@ namespace WordTypePracticeLite {
                 this.toggleShuffleMode.IsChecked = value;
             }
         }
-        private int usingTimeCount = 0;
+        private int usingTime = 0;
         private int correctCount = 0;
         private PracticeWords practiceWords;
         List<int> RestWordsIndex;
         private DispatcherTimer timer = new DispatcherTimer();
-        private SolidColorBrush colorTypeReady = new SolidColorBrush(Color.FromRgb(0xf9, 0xc5, 0x3a));
-        private SolidColorBrush colorTypeStatic = new SolidColorBrush(Color.FromRgb(0x15, 0xb9, 0x79));
-        private SolidColorBrush colorTyping = new SolidColorBrush(Color.FromRgb(0xbd, 0x2f, 0x54));
-        private SolidColorBrush colorNotClick = new SolidColorBrush(Color.FromRgb(0xa0, 0xa0, 0xa0));
-        private SolidColorBrush colorClicked = new SolidColorBrush(Color.FromRgb(0x30, 0x30, 0x30));
         #endregion
         public MainWindow() {
             InitializeComponent();
-            if (File.Exists("TPWordList.txt") == false) {
-                MessageBox.Show($"未找到{defaultWordListFile}文件，请确保{defaultWordListFile}与该程序位于同一目录");
-                Application.Current.Shutdown();
-                return;
-            }
+            GetWordsListFiles();
             GetPracticeWords();
-            this.sliderSeekWordIndex.Maximum = practiceWords.WordsSize - 1;
+            OrderedMode();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += new EventHandler(Timer_Tick);
-            OrderedMode();
         }
         private void txtInputString_TextChanged(object sender, TextChangedEventArgs e) {
             if (this.RestWordsIndex == null) {
@@ -115,11 +111,21 @@ namespace WordTypePracticeLite {
             currentPracticeWord = practiceWords.Words[seekWordIndex];
         }
         private void Timer_Tick(object sender, EventArgs e) {
-            this.toggleShuffleMode.Content = usingTimeCount;
-            ++usingTimeCount;
+            this.toggleShuffleMode.Content = usingTime;
+            ++usingTime;
         }
         private void Window_Move(object sender, MouseButtonEventArgs e) {
-            this.DragMove();
+            if (e.ClickCount == 2) {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.InitialDirectory = Directory.GetCurrentDirectory();
+                if (ofd.ShowDialog() == true) {
+                    currentWordListFile = ofd.FileName;
+                }
+                GetPracticeWords();
+                OrderedMode();
+            } else {
+                this.DragMove();
+            }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
@@ -130,7 +136,9 @@ namespace WordTypePracticeLite {
                     OrderedMode();
                     break;
                 case Key.F5:
-                    RandomMode();
+                    GetWordsListFiles();
+                    GetPracticeWords();
+                    OrderedMode();
                     break;
                 case Key.Enter:
                     if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
@@ -167,14 +175,14 @@ namespace WordTypePracticeLite {
             timer.Stop();
             this.RestWordsIndex = null;
             this.lblColorIndicator.Background = colorTypeStatic;
-            string stars = practiceWords.GetStars(usingTimeCount, correctCount);
+            string stars = practiceWords.GetStars(usingTime, correctCount);
             this.lblStarsLevel.Content = stars;
             correctCount = 0;
-            usingTimeCount = 0;
+            usingTime = 0;
         }
         private void ResetStaticstic() {
             timer.Stop();
-            usingTimeCount = 0;
+            usingTime = 0;
             correctCount = 0;
             this.toggleShuffleMode.Content = 0;
             this.currentInputWord = "";
@@ -184,8 +192,8 @@ namespace WordTypePracticeLite {
         }
         private void GetPracticeWords() {
             List<string> words = new List<string>();
-            if (File.Exists(defaultWordListFile)) {
-                using (StreamReader reader = new StreamReader(defaultWordListFile)) {
+            if (File.Exists(currentWordListFile)) {
+                using (StreamReader reader = new StreamReader(currentWordListFile)) {
                     while (!reader.EndOfStream) {
                         string currentLine = reader.ReadLine();
                         if (currentLine != null && currentLine != "" && currentLine != "\n" && currentLine != "\r") {
@@ -198,6 +206,7 @@ namespace WordTypePracticeLite {
             if (practiceWords.Words.Count == 0) {
                 practiceWords.Words.Add("NULL_WORDS");
             }
+            this.sliderSeekWordIndex.Maximum = practiceWords.WordsSize - 1;
         }
         private void RandomMode() {
             ResetStaticstic();
@@ -215,6 +224,21 @@ namespace WordTypePracticeLite {
             }
             currentPracticeWord = practiceWords.Words[RestWordsIndex[0]];
             RestWordsIndex.RemoveAt(0);
+        }
+        private void GetWordsListFiles() {
+            List<string> possibleFiles = new List<string>();
+            string currentPath = Directory.GetCurrentDirectory();
+            foreach (string filePath in Directory.GetFiles(currentPath)) {
+                string fileName = System.IO.Path.GetFileName(filePath);
+                if (fileName.Contains("WordsListWP.txt")) {
+                    possibleFiles.Add(fileName);
+                }
+            }
+            if (possibleFiles.Count > 0) {
+                currentWordListFile = possibleFiles[rnd.Next(possibleFiles.Count)];
+            } else {
+                currentWordListFile = null;
+            }
         }
     }
 }
