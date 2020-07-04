@@ -142,8 +142,10 @@ namespace WordTypePracticeLite {
             throw new NotImplementedException();
         }
         public string GetStars(double timeUsing, int correctCount) {
-            double timeRatio = 4 / (timeUsing / Size);
+            double timeRatio = 3 / (timeUsing / Size);
+            timeRatio = timeRatio <= 1.5 ? timeRatio : 1.5;
             double correctRatio = correctCount / (double)Size;
+            correctRatio = correctRatio <= 1.5 ? correctRatio : 1.5;
             int scores = (int)(100 * timeRatio * correctRatio);
             scores = scores <= 100 ? scores : 100;
             return TypePricatice.GetStars(scores);

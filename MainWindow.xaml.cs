@@ -90,7 +90,7 @@ namespace WordTypePracticeLite {
             }
             if (currentInputWord.Length >= currentPracticeWord.Length) {
                 //如果输入单词等于联系单词，增加正确计数
-                if (currentInputWord == currentPracticeWord && !isCurrentWordLocked) {
+                if (currentInputWord == this.practiceWords.CurrentWord.Word && !isCurrentWordLocked) {
                     ++correctCount;
                 }
                 //读取下一个单词或者结算
