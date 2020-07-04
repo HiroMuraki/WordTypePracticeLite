@@ -2,12 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:WordTypePracticeLite">
     <SolidColorBrush x:Key="ColorShuffleMode" Color="#FF24a0ff"/>
-    <SolidColorBrush x:Key="ColorTextBackground" Color="#FF505050"/>
+    <SolidColorBrush x:Key="ColorTextBackground" Color="#FF808080"/>
     <SolidColorBrush x:Key="ColorTextForeground" Color="#FF202020"/>
     <SolidColorBrush x:Key="ColorAccent" Color="#f9c53a"/>
     <SolidColorBrush x:Key="ColorLightWhite" Color="#fafafa"/>
     <SolidColorBrush x:Key="ColorMediumWhite" Color="#f0f0f0"/>
-    <SolidColorBrush x:Key="ColorLightBlack" Color="#a0a0a0"/>
+    <SolidColorBrush x:Key="ColorLightBlack" Color="#c3c3c3"/>
     <Style x:Key="GeneralLabel" TargetType="Label">
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -117,7 +117,8 @@
         <Setter Property="FontFamily" Value="Consolas"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CaretBrush" Value="{StaticResource ColorLightBlack}"/>
-        <Setter Property="FontSize" Value="26"/>
+        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="{StaticResource ColorTextForeground}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -152,5 +153,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
 </ResourceDictionary>

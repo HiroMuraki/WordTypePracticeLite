@@ -60,12 +60,30 @@ namespace WordTypePracticeLite {
     class PracticeWords : IEnumerable<WordItem> {
         readonly private Random rnd = new Random();
         public int CurrentWordIndex { get; set; }
+        public WordItem PreWord {
+            get {
+                if (CurrentWordIndex > 0) {
+                    return Words[CurrentWordIndex - 1];
+                } else {
+                    return new WordItem("", "");
+                }
+            }
+        }
         public WordItem CurrentWord {
             get {
                 return Words[CurrentWordIndex];
             }
             set {
                 Words[CurrentWordIndex] = value;
+            }
+        }
+        public WordItem NextWord {
+            get {
+                if (CurrentWordIndex < this.Size - 1) {
+                    return Words[CurrentWordIndex + 1];
+                } else {
+                    return new WordItem("", "");
+                }
             }
         }
         public List<WordItem> Words { get; set; }
@@ -96,14 +114,14 @@ namespace WordTypePracticeLite {
                 Words[b] = t;
             }
         }
-        public void NextWord() {
+        public void ToNextWord() {
             if (CurrentWordIndex < Size - 1) {
                 ++CurrentWordIndex;
             } else {
                 this.CurrentWordIndex = 0;
             }
         }
-        public void PreWord() {
+        public void ToPreWord() {
             if (CurrentWordIndex > 0) {
                 --CurrentWordIndex;
             } else {

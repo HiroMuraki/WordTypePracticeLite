@@ -93,13 +93,9 @@ namespace WordTypePracticeLite {
                 }
                 //读取下一个单词或者结算
                 if (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size) {
-                    this.practiceWords.NextWord();
-                    this.currentInputWord = "";
-                    this.currentPracticeWord = practiceWords.CurrentWord.Word;
+                    this.practiceWords.ToNextWord();
                     this.seekWordIndex = practiceWords.CurrentWordIndex;
-                    this.lblStarsLevel.Visibility = Visibility.Visible;
-                    this.lblStarsLevel.Content = $"{practiceWords.CurrentWord.Meaning}";
-                    this.lblCurrentPosition.Content = this.practiceWords.CurrentWordIndex + 1;
+                    GetWord();
                 } else {
                     GetStaticstic();
                     //MessageBox.Show("YZTXDY");
@@ -107,11 +103,8 @@ namespace WordTypePracticeLite {
             }
         }
         private void sliderSeekWordIndex_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            this.currentInputWord = "";
             this.practiceWords.CurrentWordIndex = seekWordIndex;
-            this.currentPracticeWord = practiceWords.CurrentWord.Word;
-            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
-            this.lblCurrentPosition.Content = this.practiceWords.CurrentWordIndex + 1;
+            GetWord();
         }
         private void toggleShuffleMode_Click(object sender, RoutedEventArgs e) {
             if (isRandomMode == true) {
@@ -156,13 +149,7 @@ namespace WordTypePracticeLite {
                     OrderedMode();
                     break;
                 case Key.Enter when (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size):
-                    if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
-                        this.sliderSeekWordIndex.Visibility = Visibility.Collapsed;
-                        this.lblStarsLevel.Visibility = Visibility.Collapsed;
-                    } else {
-                        this.sliderSeekWordIndex.Visibility = Visibility.Visible;
-                        this.lblStarsLevel.Visibility = Visibility.Visible;
-                    }
+                    ToggleVisibilitiyOfExtraInformation();
                     break;
                 case Key.Enter:
                     RandomMode();
@@ -188,6 +175,7 @@ namespace WordTypePracticeLite {
     public partial class MainWindow : Window {
         private void GetStaticstic() {
             timer.Stop();
+            this.lblStarsLevel.Visibility = Visibility.Visible;
             this.txtInputString.IsReadOnly = true;
             this.lblColorIndicator.Background = colorTypeStatic;
             this.lblStarsLevel.Content = practiceWords.GetStars(usingTime, correctCount);
@@ -219,23 +207,29 @@ namespace WordTypePracticeLite {
                     }
                 }
             }
-            practiceWords = new PracticeWords(originWordsList);
-            if (practiceWords.Words.Count == 0) {
-                practiceWords.Words.Add(new WordItem("YZTXDY", "确信"));
+            if (originWordsList.Count == 0) {
+                originWordsList.Add(new WordItem("YZTXDY", "确信"));
             }
+            practiceWords = new PracticeWords(originWordsList);
             this.sliderSeekWordIndex.Maximum = practiceWords.Size - 1;
         }
         private void RandomMode() {
             ResetStaticstic();
             isRandomMode = true;
             this.practiceWords.ShuffleWords();
-            currentPracticeWord = practiceWords.CurrentWord.Word;
+            this.lblPreWord.Content = practiceWords.PreWord.Word;
+            this.currentPracticeWord = practiceWords.CurrentWord.Word;
+            this.lblNextWord.Content = practiceWords.NextWord.Word;
+            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
         }
         private void OrderedMode() {
             ResetStaticstic();
             isRandomMode = false;
             this.practiceWords = new PracticeWords(originWordsList);
-            currentPracticeWord = practiceWords.CurrentWord.Word;
+            this.lblPreWord.Content = practiceWords.PreWord.Word;
+            this.currentPracticeWord = practiceWords.CurrentWord.Word;
+            this.lblNextWord.Content = practiceWords.NextWord.Word;
+            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
         }
         private void GetWordsListFile() {
             List<string> possibleFiles = new List<string>();
@@ -251,6 +245,27 @@ namespace WordTypePracticeLite {
             } else {
                 currentWordListFile = null;
             }
+        }
+        private void ToggleVisibilitiyOfExtraInformation() {
+            if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
+                this.sliderSeekWordIndex.Visibility = Visibility.Collapsed;
+                this.lblStarsLevel.Visibility = Visibility.Collapsed;
+                this.lblPreWord.Visibility = Visibility.Collapsed;
+                this.lblNextWord.Visibility = Visibility.Collapsed;
+            } else {
+                this.sliderSeekWordIndex.Visibility = Visibility.Visible;
+                this.lblStarsLevel.Visibility = Visibility.Visible;
+                this.lblNextWord.Visibility = Visibility.Visible;
+                this.lblPreWord.Visibility = Visibility.Visible;
+            }
+        }
+        private void GetWord() {
+            this.currentInputWord = "";
+            this.currentPracticeWord = this.practiceWords.CurrentWord.Word;
+            this.lblStarsLevel.Content = this.practiceWords.CurrentWord.Meaning;
+            this.lblPreWord.Content = this.practiceWords.PreWord.Word;
+            this.lblNextWord.Content = this.practiceWords.NextWord.Word;
+            this.lblCurrentPosition.Content = this.practiceWords.CurrentWordIndex + 1;
         }
     }
     #endregion

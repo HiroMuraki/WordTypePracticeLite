@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WordTypePracticeLite" FocusManager.FocusedElement="{Binding ElementName=txtInputString}"
         WindowStyle="None" ResizeMode="NoResize" Background="Transparent" AllowsTransparency="True"
         mc:Ignorable="d" KeyDown="Window_KeyDown" MouseWheel="Window_MouseWheel"
-        Title="MainWindow" Height="160" Width="390" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="220" Width="500" WindowStartupLocation="CenterScreen">
     <Border Background="#fafafa" CornerRadius="15"  MouseLeftButtonDown="Window_Move"
             BorderThickness="1" BorderBrush="{StaticResource ColorAccent}" Margin="5">
         <Border.Effect>
@@ -23,10 +23,22 @@
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Column="1" HorizontalAlignment="Center">
-                    <TextBox x:Name="txtPracticeString" Style="{StaticResource ResourceKey=TextPresent}" Opacity="0.5"
-                             IsHitTestVisible="False" IsReadOnly="True" Foreground="{StaticResource ColorTextBackground}"/>
-                    <TextBox x:Name="txtInputString" Style="{StaticResource ResourceKey=TextPresent}"
-                             TextChanged="txtInputString_TextChanged"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1.5*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Label x:Name="lblPreWord" Grid.Row="0" Style="{StaticResource GeneralLabel}"
+                           Content="test" Foreground="{StaticResource ColorLightBlack}" FontSize="16"/>
+                    <Grid Grid.Row="1" HorizontalAlignment="Center">
+                        <TextBox x:Name="txtPracticeString" Style="{StaticResource ResourceKey=TextPresent}"
+                                 IsHitTestVisible="False" IsReadOnly="True" Foreground="{StaticResource ColorTextBackground}"
+                                 Text="TEST"/>
+                        <TextBox x:Name="txtInputString" Style="{StaticResource ResourceKey=TextPresent}"
+                                 TextChanged="txtInputString_TextChanged"/>
+                    </Grid>
+                    <Label x:Name="lblNextWord" Grid.Row="2" Style="{StaticResource GeneralLabel}"
+                           Content="test" Foreground="{StaticResource ColorLightBlack}" FontSize="16"/>
                 </Grid>
                 <Slider x:Name="sliderSeekWordIndex" ValueChanged="sliderSeekWordIndex_ValueChanged" Grid.Row="1"
                         Minimum="0" VerticalAlignment="Center" Style="{StaticResource GeneralSlider}"/>
