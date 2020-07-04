@@ -23,12 +23,15 @@ namespace WordTypePracticeLite {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
+    ///
+    #region 字段与属性
     public partial class MainWindow : Window {
-        #region 字段
         static readonly private Random rnd = new Random();
         static readonly private SolidColorBrush colorTypeReady = new SolidColorBrush(Color.FromRgb(0xf9, 0xc5, 0x3a));
         static readonly private SolidColorBrush colorTypeStatic = new SolidColorBrush(Color.FromRgb(0x15, 0xb9, 0x79));
         static readonly private SolidColorBrush colorTyping = new SolidColorBrush(Color.FromRgb(0xbd, 0x2f, 0x54));
+        private List<string> originWordsList;
+        private PracticeWords practiceWords;
         private string currentWordListFile;
         private int seekWordIndex {
             get {
@@ -64,43 +67,38 @@ namespace WordTypePracticeLite {
         }
         private int usingTime = 0;
         private int correctCount = 0;
-        private PracticeWords practiceWords;
-        List<int> RestWordsIndex;
         private DispatcherTimer timer = new DispatcherTimer();
-        #endregion
+    }
+    #endregion
+
+    #region 主窗口
+    public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
-            GetWordsListFiles();
+            GetWordsListFile();
             GetPracticeWords();
             OrderedMode();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += new EventHandler(Timer_Tick);
         }
         private void txtInputString_TextChanged(object sender, TextChangedEventArgs e) {
-            if (this.RestWordsIndex == null) {
-                RandomMode();
-            }
             if (timer.IsEnabled == false) {
                 this.lblColorIndicator.Background = colorTyping;
                 timer.Start();
             }
             if (currentInputWord.Length >= currentPracticeWord.Length) {
-                if (this.RestWordsIndex.Count > 0) {
-                    //如果输入单词等于联系单词，增加正确计数
-                    if (currentInputWord == currentPracticeWord) {
-                        ++correctCount;
-                    }
-                    //读取下一个单词
-                    seekWordIndex = RestWordsIndex[0];
+                //如果输入单词等于联系单词，增加正确计数
+                if (currentInputWord == currentPracticeWord) {
+                    ++correctCount;
+                }
+                //读取下一个单词或者结算
+                if (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size) {
+                    this.practiceWords.NextWord();
                     this.currentInputWord = "";
-                    this.currentPracticeWord = practiceWords.Words[RestWordsIndex[0]];
-                    RestWordsIndex.RemoveAt(0);
-                    //同步练习进度
-                    this.lblStarsLevel.Content = $"{practiceWords.WordsSize - RestWordsIndex.Count}/{practiceWords.WordsSize}";
-                } else if (this.RestWordsIndex.Count == 0) {
-                    if (currentInputWord == currentPracticeWord) {
-                        ++correctCount;
-                    }
+                    this.currentPracticeWord = practiceWords.CurrentWord;
+                    this.seekWordIndex = practiceWords.CurrentWordIndex;
+                    this.lblStarsLevel.Content = $"{practiceWords.CurrentWordIndex + 1}/{practiceWords.Size}";
+                } else {
                     GetStaticstic();
                     //MessageBox.Show("YZTXDY");
                 }
@@ -108,21 +106,35 @@ namespace WordTypePracticeLite {
         }
         private void sliderSeekWordIndex_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             currentInputWord = "";
-            currentPracticeWord = practiceWords.Words[seekWordIndex];
+            practiceWords.CurrentWordIndex = seekWordIndex;
+            currentPracticeWord = practiceWords.CurrentWord;
+            this.lblStarsLevel.Content = $"{practiceWords.CurrentWordIndex + 1}/{practiceWords.Size}";
+        }
+        private void toggleShuffleMode_Click(object sender, RoutedEventArgs e) {
+            if (isRandomMode == true) {
+                RandomMode();
+            } else {
+                OrderedMode();
+            }
         }
         private void Timer_Tick(object sender, EventArgs e) {
-            this.toggleShuffleMode.Content = usingTime;
             ++usingTime;
+            this.toggleShuffleMode.Content = usingTime;
         }
+    }
+    #endregion
+
+    #region 窗口操作与快捷键
+    public partial class MainWindow : Window {
         private void Window_Move(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount == 2) {
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.InitialDirectory = Directory.GetCurrentDirectory();
                 if (ofd.ShowDialog() == true) {
                     currentWordListFile = ofd.FileName;
+                    GetPracticeWords();
+                    OrderedMode();
                 }
-                GetPracticeWords();
-                OrderedMode();
             } else {
                 this.DragMove();
             }
@@ -136,16 +148,19 @@ namespace WordTypePracticeLite {
                     OrderedMode();
                     break;
                 case Key.F5:
-                    GetWordsListFiles();
+                    GetWordsListFile();
                     GetPracticeWords();
                     OrderedMode();
                     break;
-                case Key.Enter:
+                case Key.Enter when (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size):
                     if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
                         this.sliderSeekWordIndex.Visibility = Visibility.Collapsed;
                     } else {
                         this.sliderSeekWordIndex.Visibility = Visibility.Visible;
                     }
+                    break;
+                case Key.Enter:
+                    RandomMode();
                     break;
                 case Key.Escape:
                     Application.Current.Shutdown();
@@ -156,76 +171,67 @@ namespace WordTypePracticeLite {
         }
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e) {
             if (e.Delta > 0) {
-                seekWordIndex += 1;
-            } else if (e.Delta < 0) {
                 seekWordIndex -= 1;
-            }
-        }
-        private void toggleShuffleMode_Click(object sender, RoutedEventArgs e) {
-            if (isRandomMode == true) {
-                RandomMode();
-            } else {
-                OrderedMode();
+            } else if (e.Delta < 0) {
+                seekWordIndex += 1;
             }
         }
     }
+    #endregion
 
+    #region 包装方法
     public partial class MainWindow : Window {
         private void GetStaticstic() {
             timer.Stop();
-            this.RestWordsIndex = null;
+            this.txtInputString.IsReadOnly = true;
             this.lblColorIndicator.Background = colorTypeStatic;
-            string stars = practiceWords.GetStars(usingTime, correctCount);
-            this.lblStarsLevel.Content = stars;
-            correctCount = 0;
-            usingTime = 0;
+            this.lblStarsLevel.Content = practiceWords.GetStars(usingTime, correctCount);
+            this.correctCount = 0;
+            this.usingTime = 0;
         }
         private void ResetStaticstic() {
             timer.Stop();
-            usingTime = 0;
-            correctCount = 0;
+            this.usingTime = 0;
+            this.correctCount = 0;
+            this.seekWordIndex = 0;
             this.toggleShuffleMode.Content = 0;
+            this.txtInputString.IsReadOnly = false;
             this.currentInputWord = "";
             this.currentPracticeWord = "";
-            this.lblStarsLevel.Content = $"0/{practiceWords.WordsSize}";
+            this.lblStarsLevel.Content = $"1/{practiceWords.Size}";
             this.lblColorIndicator.Background = colorTypeReady;
         }
         private void GetPracticeWords() {
-            List<string> words = new List<string>();
+            originWordsList = new List<string>();
             if (File.Exists(currentWordListFile)) {
                 using (StreamReader reader = new StreamReader(currentWordListFile)) {
                     while (!reader.EndOfStream) {
                         string currentLine = reader.ReadLine();
                         if (currentLine != null && currentLine != "" && currentLine != "\n" && currentLine != "\r") {
-                            words.Add(currentLine);
+                            originWordsList.Add(currentLine.Trim());
                         }
                     }
                 }
             }
-            practiceWords = new PracticeWords(words);
+            practiceWords = new PracticeWords(originWordsList);
             if (practiceWords.Words.Count == 0) {
-                practiceWords.Words.Add("NULL_WORDS");
+                practiceWords.Words.Add("YZTXDY");
             }
-            this.sliderSeekWordIndex.Maximum = practiceWords.WordsSize - 1;
+            this.sliderSeekWordIndex.Maximum = practiceWords.Size - 1;
         }
         private void RandomMode() {
             ResetStaticstic();
             isRandomMode = true;
-            this.RestWordsIndex = new List<int>(practiceWords.ShuffleWOrdsIndex());
-            currentPracticeWord = practiceWords.Words[RestWordsIndex[0]];
-            RestWordsIndex.RemoveAt(0);
+            this.practiceWords.ShuffleWords();
+            currentPracticeWord = practiceWords.CurrentWord;
         }
         private void OrderedMode() {
             ResetStaticstic();
             isRandomMode = false;
-            this.RestWordsIndex = new List<int>();
-            for (int i = 0; i < practiceWords.WordsSize; i++) {
-                RestWordsIndex.Add(i);
-            }
-            currentPracticeWord = practiceWords.Words[RestWordsIndex[0]];
-            RestWordsIndex.RemoveAt(0);
+            this.practiceWords = new PracticeWords(originWordsList);
+            currentPracticeWord = practiceWords.CurrentWord;
         }
-        private void GetWordsListFiles() {
+        private void GetWordsListFile() {
             List<string> possibleFiles = new List<string>();
             string currentPath = Directory.GetCurrentDirectory();
             foreach (string filePath in Directory.GetFiles(currentPath)) {
@@ -241,4 +247,5 @@ namespace WordTypePracticeLite {
             }
         }
     }
+    #endregion
 }
