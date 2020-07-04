@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Threading;
 
 namespace WordTypePracticeLite {
     class Backup {
@@ -35,10 +36,31 @@ namespace WordTypePracticeLite {
         //}
         //public string GetARandomWord { get { return Words[rnd.Next(Size)]; } }
     }
-    class PracticeWords : IEnumerable<string> {
+    struct WordItem {
+        public string Word;
+        public string Meaning;
+        public WordItem(string wordString) {
+            string[] wordItem = wordString.Split('#');
+            if (wordItem.Length >= 2) {
+                this.Word = wordItem[0].Trim();
+                this.Meaning = wordItem[1].Trim();
+            } else if (wordItem.Length == 1) {
+                this.Word = wordItem[0].Trim();
+                this.Meaning = "";
+            } else {
+                this.Word = "";
+                this.Meaning = "";
+            }
+        }
+        public WordItem(string word, string meaning) {
+            this.Word = word;
+            this.Meaning = meaning;
+        }
+    }
+    class PracticeWords : IEnumerable<WordItem> {
         readonly private Random rnd = new Random();
         public int CurrentWordIndex { get; set; }
-        public string CurrentWord {
+        public WordItem CurrentWord {
             get {
                 return Words[CurrentWordIndex];
             }
@@ -46,9 +68,9 @@ namespace WordTypePracticeLite {
                 Words[CurrentWordIndex] = value;
             }
         }
-        public List<string> Words { get; set; }
+        public List<WordItem> Words { get; set; }
         public int Size { get { return Words.Count; } }
-        public string this[int index] {
+        public WordItem this[int index] {
             get {
                 return this.Words[index];
             }
@@ -57,11 +79,11 @@ namespace WordTypePracticeLite {
             }
         }
         public PracticeWords() {
-            this.Words = new List<string>();
+            this.Words = new List<WordItem>();
             CurrentWordIndex = 0;
         }
-        public PracticeWords(List<string> Words) : this() {
-            foreach (string word in Words) {
+        public PracticeWords(List<WordItem> Words) : this() {
+            foreach (WordItem word in Words) {
                 this.Words.Add(word);
             }
         }
@@ -69,7 +91,7 @@ namespace WordTypePracticeLite {
             for (int i = 0; i < this.Size; i++) {
                 int a = rnd.Next(this.Size);
                 int b = rnd.Next(this.Size);
-                string t = Words[a];
+                WordItem t = Words[a];
                 Words[a] = Words[b];
                 Words[b] = t;
             }
@@ -88,9 +110,14 @@ namespace WordTypePracticeLite {
                 this.CurrentWordIndex = 0;
             }
         }
-        public IEnumerator<string> GetEnumerator() {
-            foreach (string word in Words) {
+        public IEnumerator<WordItem> GetEnumerator() {
+            foreach (WordItem word in Words) {
                 yield return word;
+            }
+        }
+        public IEnumerable<string> GetWords() {
+            foreach (WordItem wordItem in this.Words) {
+                yield return wordItem.Word;
             }
         }
         IEnumerator IEnumerable.GetEnumerator() {

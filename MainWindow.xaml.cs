@@ -30,7 +30,7 @@ namespace WordTypePracticeLite {
         static readonly private SolidColorBrush colorTypeReady = new SolidColorBrush(Color.FromRgb(0xf9, 0xc5, 0x3a));
         static readonly private SolidColorBrush colorTypeStatic = new SolidColorBrush(Color.FromRgb(0x15, 0xb9, 0x79));
         static readonly private SolidColorBrush colorTyping = new SolidColorBrush(Color.FromRgb(0xbd, 0x2f, 0x54));
-        private List<string> originWordsList;
+        private List<WordItem> originWordsList;
         private PracticeWords practiceWords;
         private string currentWordListFile;
         private int seekWordIndex {
@@ -95,9 +95,11 @@ namespace WordTypePracticeLite {
                 if (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size) {
                     this.practiceWords.NextWord();
                     this.currentInputWord = "";
-                    this.currentPracticeWord = practiceWords.CurrentWord;
+                    this.currentPracticeWord = practiceWords.CurrentWord.Word;
                     this.seekWordIndex = practiceWords.CurrentWordIndex;
-                    this.lblStarsLevel.Content = $"{practiceWords.CurrentWordIndex + 1}/{practiceWords.Size}";
+                    this.lblStarsLevel.Visibility = Visibility.Visible;
+                    this.lblStarsLevel.Content = $"{practiceWords.CurrentWord.Meaning}";
+                    this.lblCurrentPosition.Content = this.practiceWords.CurrentWordIndex + 1;
                 } else {
                     GetStaticstic();
                     //MessageBox.Show("YZTXDY");
@@ -105,10 +107,11 @@ namespace WordTypePracticeLite {
             }
         }
         private void sliderSeekWordIndex_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            currentInputWord = "";
-            practiceWords.CurrentWordIndex = seekWordIndex;
-            currentPracticeWord = practiceWords.CurrentWord;
-            this.lblStarsLevel.Content = $"{practiceWords.CurrentWordIndex + 1}/{practiceWords.Size}";
+            this.currentInputWord = "";
+            this.practiceWords.CurrentWordIndex = seekWordIndex;
+            this.currentPracticeWord = practiceWords.CurrentWord.Word;
+            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
+            this.lblCurrentPosition.Content = this.practiceWords.CurrentWordIndex + 1;
         }
         private void toggleShuffleMode_Click(object sender, RoutedEventArgs e) {
             if (isRandomMode == true) {
@@ -155,8 +158,10 @@ namespace WordTypePracticeLite {
                 case Key.Enter when (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size):
                     if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
                         this.sliderSeekWordIndex.Visibility = Visibility.Collapsed;
+                        this.lblStarsLevel.Visibility = Visibility.Collapsed;
                     } else {
                         this.sliderSeekWordIndex.Visibility = Visibility.Visible;
+                        this.lblStarsLevel.Visibility = Visibility.Visible;
                     }
                     break;
                 case Key.Enter:
@@ -198,24 +203,25 @@ namespace WordTypePracticeLite {
             this.txtInputString.IsReadOnly = false;
             this.currentInputWord = "";
             this.currentPracticeWord = "";
-            this.lblStarsLevel.Content = $"1/{practiceWords.Size}";
+            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
+            this.lblCurrentPosition.Content = 1;
             this.lblColorIndicator.Background = colorTypeReady;
         }
         private void GetPracticeWords() {
-            originWordsList = new List<string>();
+            originWordsList = new List<WordItem>();
             if (File.Exists(currentWordListFile)) {
                 using (StreamReader reader = new StreamReader(currentWordListFile)) {
                     while (!reader.EndOfStream) {
                         string currentLine = reader.ReadLine();
                         if (currentLine != null && currentLine != "" && currentLine != "\n" && currentLine != "\r") {
-                            originWordsList.Add(currentLine.Trim());
+                            originWordsList.Add(new WordItem(currentLine));
                         }
                     }
                 }
             }
             practiceWords = new PracticeWords(originWordsList);
             if (practiceWords.Words.Count == 0) {
-                practiceWords.Words.Add("YZTXDY");
+                practiceWords.Words.Add(new WordItem("YZTXDY", "确信"));
             }
             this.sliderSeekWordIndex.Maximum = practiceWords.Size - 1;
         }
@@ -223,13 +229,13 @@ namespace WordTypePracticeLite {
             ResetStaticstic();
             isRandomMode = true;
             this.practiceWords.ShuffleWords();
-            currentPracticeWord = practiceWords.CurrentWord;
+            currentPracticeWord = practiceWords.CurrentWord.Word;
         }
         private void OrderedMode() {
             ResetStaticstic();
             isRandomMode = false;
             this.practiceWords = new PracticeWords(originWordsList);
-            currentPracticeWord = practiceWords.CurrentWord;
+            currentPracticeWord = practiceWords.CurrentWord.Word;
         }
         private void GetWordsListFile() {
             List<string> possibleFiles = new List<string>();

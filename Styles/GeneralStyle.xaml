@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:WordTypePracticeLite">
     <SolidColorBrush x:Key="ColorShuffleMode" Color="#FF24a0ff"/>
     <SolidColorBrush x:Key="ColorTextBackground" Color="#FF505050"/>
-    <SolidColorBrush x:Key="ColorTextForeground" Color="#FF000000"/>
+    <SolidColorBrush x:Key="ColorTextForeground" Color="#FF202020"/>
     <SolidColorBrush x:Key="ColorAccent" Color="#f9c53a"/>
     <SolidColorBrush x:Key="ColorLightWhite" Color="#fafafa"/>
     <SolidColorBrush x:Key="ColorMediumWhite" Color="#f0f0f0"/>

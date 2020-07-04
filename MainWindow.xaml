@@ -28,8 +28,8 @@
                     <TextBox x:Name="txtInputString" Style="{StaticResource ResourceKey=TextPresent}"
                              TextChanged="txtInputString_TextChanged"/>
                 </Grid>
-                <Slider x:Name="sliderSeekWordIndex" ValueChanged="sliderSeekWordIndex_ValueChanged"
-                        Minimum="0" Grid.Row="1" VerticalAlignment="Center" Style="{StaticResource GeneralSlider}"/>
+                <Slider x:Name="sliderSeekWordIndex" ValueChanged="sliderSeekWordIndex_ValueChanged" Grid.Row="1"
+                        Minimum="0" VerticalAlignment="Center" Style="{StaticResource GeneralSlider}"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -37,9 +37,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
-                <Border x:Name="lblColorIndicator" Grid.Column="0" Background="#15b979" CornerRadius="0,10,0,15"/>
-                <Label x:Name="lblStarsLevel" Grid.Column="1" Style="{StaticResource GeneralLabel}"/>
-                <ToggleButton x:Name="toggleShuffleMode" Style="{StaticResource ToggleModeSetter}"
+                <Border x:Name="lblColorIndicator" Grid.Column="0" Background="#15b979" CornerRadius="0,10,0,15">
+                    <Label x:Name="lblCurrentPosition" Grid.Column="1" Style="{StaticResource GeneralLabel}"
+                           Foreground="{StaticResource ColorLightWhite}"/>
+                </Border>
+                <Label x:Name="lblStarsLevel" Content="TEST" Grid.Column="1" Style="{StaticResource GeneralLabel}"/>
+                <ToggleButton x:Name="toggleShuffleMode" Style="{StaticResource ToggleModeSetter}" Focusable="False"
                               Grid.Column="2" Click="toggleShuffleMode_Click" Foreground="{StaticResource ColorLightWhite}"/>
 
             </Grid>
