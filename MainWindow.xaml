@@ -49,13 +49,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
-                <Border x:Name="lblColorIndicator" Grid.Column="0" Background="#15b979" CornerRadius="0,10,0,15">
-                    <Label x:Name="lblCurrentPosition" Grid.Column="1" Style="{StaticResource GeneralLabel}"
-                           Foreground="{StaticResource ColorLightWhite}"/>
-                </Border>
+                <ToggleButton x:Name="toggleColorIndicator" Grid.Column="0" Background="#15b979"
+                              Style="{StaticResource ToggleModeSetterL}" Content="&#x267e;"
+                              Focusable="False" Click="toggleColorIndicator_Click"/>
                 <Label x:Name="lblStarsLevel" Content="TEST" Grid.Column="1" Style="{StaticResource GeneralLabel}"/>
-                <ToggleButton x:Name="toggleShuffleMode" Style="{StaticResource ToggleModeSetter}" Focusable="False"
-                              Grid.Column="2" Click="toggleShuffleMode_Click" Foreground="{StaticResource ColorLightWhite}"/>
+                <ToggleButton x:Name="toggleShuffleMode" Grid.Column="2" Style="{StaticResource ToggleModeSetterR}" 
+                              Focusable="False" Click="toggleShuffleMode_Click"/>
 
             </Grid>
         </Grid>

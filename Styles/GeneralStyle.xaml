@@ -49,9 +49,11 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="ToggleModeSetter" TargetType="ToggleButton">
+    <Style x:Key="ToggleModeSetterR" TargetType="ToggleButton">
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource ColorLightWhite}"/>
         <Setter Property="Background" Value="#15b979"/>
+        <Setter Property="Effect" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
@@ -66,10 +68,45 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource ColorShuffleMode}"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Direction="135"
+                                                      Opacity="0.2"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" Value="{StaticResource ColorShuffleMode}"/>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="ToggleModeSetterL" TargetType="ToggleButton">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource ColorLightWhite}"/>
+        <Setter Property="Background" Value="#15b979"/>
+        <Setter Property="Effect" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border>
+                        <Border x:Name="lblShuffleMode" CornerRadius="0,10,0,15"
+                                Padding="0" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Label Style="{StaticResource GeneralLabel}" Content="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Direction="45"
+                                                      Opacity="0.2"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

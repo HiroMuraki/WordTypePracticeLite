@@ -30,6 +30,7 @@ namespace WordTypePracticeLite {
         static readonly private SolidColorBrush colorTypeReady = new SolidColorBrush(Color.FromRgb(0xf9, 0xc5, 0x3a));
         static readonly private SolidColorBrush colorTypeStatic = new SolidColorBrush(Color.FromRgb(0x15, 0xb9, 0x79));
         static readonly private SolidColorBrush colorTyping = new SolidColorBrush(Color.FromRgb(0xbd, 0x2f, 0x54));
+        static readonly private SolidColorBrush colorShuffleMode = new SolidColorBrush(Color.FromRgb(0x24, 0xa0, 0xff));
         private List<WordItem> originWordsList;
         private PracticeWords practiceWords;
         private string currentWordListFile;
@@ -67,6 +68,7 @@ namespace WordTypePracticeLite {
         }
         private int usingTime = 0;
         private int correctCount = 0;
+        private bool isCurrentWordLocked = false;
         private DispatcherTimer timer = new DispatcherTimer();
     }
     #endregion
@@ -82,23 +84,34 @@ namespace WordTypePracticeLite {
             timer.Tick += new EventHandler(Timer_Tick);
         }
         private void txtInputString_TextChanged(object sender, TextChangedEventArgs e) {
-            if (timer.IsEnabled == false) {
-                this.lblColorIndicator.Background = colorTyping;
+            if (timer.IsEnabled == false && !this.isCurrentWordLocked) {
+                this.toggleColorIndicator.Background = colorTyping;
                 timer.Start();
             }
             if (currentInputWord.Length >= currentPracticeWord.Length) {
                 //如果输入单词等于联系单词，增加正确计数
-                if (currentInputWord == currentPracticeWord) {
+                if (currentInputWord == currentPracticeWord && !isCurrentWordLocked) {
                     ++correctCount;
                 }
                 //读取下一个单词或者结算
                 if (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size) {
-                    this.practiceWords.ToNextWord();
-                    this.seekWordIndex = practiceWords.CurrentWordIndex;
+                    if (!isCurrentWordLocked) {
+                        this.practiceWords.ToNextWord();
+                    }
                     GetWord();
                 } else {
                     GetStaticstic();
                     //MessageBox.Show("YZTXDY");
+                }
+            } else {
+                string temp = this.practiceWords.CurrentWord.Word;
+                this.currentPracticeWord = "";
+                for (int i = 0; i < this.practiceWords.CurrentWord.Word.Length; i++) {
+                    if (i < this.currentInputWord.Length) {
+                        this.currentPracticeWord += " ";
+                    } else {
+                        this.currentPracticeWord += temp[i];
+                    }
                 }
             }
         }
@@ -107,15 +120,14 @@ namespace WordTypePracticeLite {
             GetWord();
         }
         private void toggleShuffleMode_Click(object sender, RoutedEventArgs e) {
-            if (isRandomMode == true) {
-                RandomMode();
-            } else {
-                OrderedMode();
-            }
+            SwitchShuffleMode();
         }
         private void Timer_Tick(object sender, EventArgs e) {
             ++usingTime;
             this.toggleShuffleMode.Content = usingTime;
+        }
+        private void toggleColorIndicator_Click(object sender, RoutedEventArgs e) {
+            SwitchLockCurrentWord();
         }
     }
     #endregion
@@ -125,6 +137,7 @@ namespace WordTypePracticeLite {
         private void Window_Move(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount == 2) {
                 OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "文本文件|*.txt|所有文件|*.*";
                 ofd.InitialDirectory = Directory.GetCurrentDirectory();
                 if (ofd.ShowDialog() == true) {
                     currentWordListFile = ofd.FileName;
@@ -148,8 +161,22 @@ namespace WordTypePracticeLite {
                     GetPracticeWords();
                     OrderedMode();
                     break;
+                case Key.LeftCtrl:
+                    SwitchLockCurrentWord();
+                    break;
+                case Key.RightCtrl:
+                    SwitchShuffleMode();
+                    break;
+                case Key.Up:
+                    this.practiceWords.ToPreWord();
+                    GetWord();
+                    break;
+                case Key.Down:
+                    this.practiceWords.ToNextWord();
+                    GetWord();
+                    break;
                 case Key.Enter when (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size):
-                    ToggleVisibilitiyOfExtraInformation();
+                    SwitchVisibilitiyOfExtraInformation();
                     break;
                 case Key.Enter:
                     RandomMode();
@@ -177,7 +204,7 @@ namespace WordTypePracticeLite {
             timer.Stop();
             this.lblStarsLevel.Visibility = Visibility.Visible;
             this.txtInputString.IsReadOnly = true;
-            this.lblColorIndicator.Background = colorTypeStatic;
+            this.toggleColorIndicator.Background = colorTypeStatic;
             this.lblStarsLevel.Content = practiceWords.GetStars(usingTime, correctCount);
             this.correctCount = 0;
             this.usingTime = 0;
@@ -192,8 +219,8 @@ namespace WordTypePracticeLite {
             this.currentInputWord = "";
             this.currentPracticeWord = "";
             this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
-            this.lblCurrentPosition.Content = 1;
-            this.lblColorIndicator.Background = colorTypeReady;
+            this.toggleColorIndicator.Content = 1;
+            this.toggleColorIndicator.Background = colorTypeReady;
         }
         private void GetPracticeWords() {
             originWordsList = new List<WordItem>();
@@ -215,28 +242,26 @@ namespace WordTypePracticeLite {
         }
         private void RandomMode() {
             ResetStaticstic();
-            isRandomMode = true;
             this.practiceWords.ShuffleWords();
-            this.lblPreWord.Content = practiceWords.PreWord.Word;
-            this.currentPracticeWord = practiceWords.CurrentWord.Word;
-            this.lblNextWord.Content = practiceWords.NextWord.Word;
-            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
+            this.isRandomMode = true;
+            this.isCurrentWordLocked = false;
+            this.toggleShuffleMode.Background = colorShuffleMode;
+            GetWord();
         }
         private void OrderedMode() {
             ResetStaticstic();
-            isRandomMode = false;
             this.practiceWords = new PracticeWords(originWordsList);
-            this.lblPreWord.Content = practiceWords.PreWord.Word;
-            this.currentPracticeWord = practiceWords.CurrentWord.Word;
-            this.lblNextWord.Content = practiceWords.NextWord.Word;
-            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
+            this.isRandomMode = false;
+            this.isCurrentWordLocked = false;
+            this.toggleShuffleMode.Background = colorTypeStatic;
+            GetWord();
         }
         private void GetWordsListFile() {
             List<string> possibleFiles = new List<string>();
             string currentPath = Directory.GetCurrentDirectory();
             foreach (string filePath in Directory.GetFiles(currentPath)) {
                 string fileName = System.IO.Path.GetFileName(filePath);
-                if (fileName.Contains("WordsListWP.txt")) {
+                if (fileName.Contains("WordsListWP")) {
                     possibleFiles.Add(fileName);
                 }
             }
@@ -246,7 +271,7 @@ namespace WordTypePracticeLite {
                 currentWordListFile = null;
             }
         }
-        private void ToggleVisibilitiyOfExtraInformation() {
+        private void SwitchVisibilitiyOfExtraInformation() {
             if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
                 this.sliderSeekWordIndex.Visibility = Visibility.Collapsed;
                 this.lblStarsLevel.Visibility = Visibility.Collapsed;
@@ -259,13 +284,38 @@ namespace WordTypePracticeLite {
                 this.lblPreWord.Visibility = Visibility.Visible;
             }
         }
+        private void SwitchShuffleMode() {
+            if (isRandomMode == true) {
+                RandomMode();
+                isRandomMode = false;
+            } else {
+                OrderedMode();
+                isRandomMode = true;
+            }
+        }
+        private void SwitchLockCurrentWord() {
+            if (this.isCurrentWordLocked) {
+                this.timer.Start();
+                this.toggleColorIndicator.Background = colorTyping;
+                this.toggleColorIndicator.Content = practiceWords.CurrentWordIndex + 1;
+                this.isCurrentWordLocked = false;
+            } else {
+                this.timer.Stop();
+                this.toggleColorIndicator.Background = colorShuffleMode;
+                this.toggleColorIndicator.Content = "\u267e";
+                this.isCurrentWordLocked = true;
+            }
+        }
         private void GetWord() {
             this.currentInputWord = "";
+            this.seekWordIndex = practiceWords.CurrentWordIndex;
             this.currentPracticeWord = this.practiceWords.CurrentWord.Word;
             this.lblStarsLevel.Content = this.practiceWords.CurrentWord.Meaning;
             this.lblPreWord.Content = this.practiceWords.PreWord.Word;
             this.lblNextWord.Content = this.practiceWords.NextWord.Word;
-            this.lblCurrentPosition.Content = this.practiceWords.CurrentWordIndex + 1;
+            if (!isCurrentWordLocked) {
+                this.toggleColorIndicator.Content = this.practiceWords.CurrentWordIndex + 1;
+            }
         }
     }
     #endregion
