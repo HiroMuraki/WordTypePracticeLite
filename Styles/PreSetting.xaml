@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:WordTypePracticeLite">
+    <ImageBrush x:Key="IndicatorStatic" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorStatic.png"/>
+    <ImageBrush x:Key="IndicatorNormal" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorNormal.png"/>
+    <ImageBrush x:Key="IndicatorRandom" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorRandom.png"/>
+    <ImageBrush x:Key="IndicatorFocus" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorFocus.png"/>
+    <ImageBrush x:Key="ToggleNormal" ImageSource="/WordTypePracticeLite;component/Resources/ToggleNormal.png"/>
+    <ImageBrush x:Key="ToggleLock" ImageSource="/WordTypePracticeLite;component/Resources/ToggleLock.png"/>
+    <ImageBrush x:Key="ToggleFocus" ImageSource="/WordTypePracticeLite;component/Resources/ToggleFocus.png"/>
+    <ImageBrush x:Key="MainBorder" ImageSource="/WordTypePracticeLite;component/Resources/MainBorder.png"/>
+    <ImageBrush x:Key="SeekBarSlider" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarSlider.png"/>
+    <ImageBrush x:Key="SeekBarThumb" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumb.png"/>
+</ResourceDictionary>

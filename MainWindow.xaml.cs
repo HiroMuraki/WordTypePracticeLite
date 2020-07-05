@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using WordTypePracticeLite;
+using static WordTypePracticeLite.ResDict;
 
 namespace WordTypePracticeLite {
     /// <summary>
@@ -60,15 +61,22 @@ namespace WordTypePracticeLite {
         }
         private bool? isRandomMode {
             get {
-                return this.toggleShuffleMode.IsChecked;
+                return this.toggleIndicatorBottom.IsChecked;
             }
             set {
-                this.toggleShuffleMode.IsChecked = value;
+                this.toggleIndicatorBottom.IsChecked = value;
             }
         }
         private int usingTime = 0;
         private int correctCount = 0;
-        private bool isCurrentWordLocked = false;
+        private bool? isCurrentWordLocked {
+            get {
+                return this.toggleIndicatorTop.IsChecked;
+            }
+            set {
+                this.toggleIndicatorTop.IsChecked = value;
+            }
+        }
         private DispatcherTimer timer = new DispatcherTimer();
     }
     #endregion
@@ -84,50 +92,49 @@ namespace WordTypePracticeLite {
             timer.Tick += new EventHandler(Timer_Tick);
         }
         private void txtInputString_TextChanged(object sender, TextChangedEventArgs e) {
-            if (timer.IsEnabled == false && !this.isCurrentWordLocked) {
-                this.toggleColorIndicator.Background = colorTyping;
-                timer.Start();
-            }
-            if (currentInputWord.Length >= currentPracticeWord.Length) {
-                //如果输入单词等于联系单词，增加正确计数
-                if (currentInputWord == this.practiceWords.CurrentWord.Word && !isCurrentWordLocked) {
-                    ++correctCount;
+            if (isCurrentWordLocked == false) {
+                if (timer.IsEnabled == false) {
+                    timer.Start();
                 }
-                //读取下一个单词或者结算
-                if (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size) {
-                    if (!isCurrentWordLocked) {
+                if (currentInputWord.Length >= currentPracticeWord.Length) {
+                    //如果输入单词等于联系单词，增加正确计数
+                    if (currentInputWord == this.practiceWords.CurrentWord.Word) {
+                        ++correctCount;
+                    }
+                    //读取下一个单词或者结算
+                    if (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size) {
                         this.practiceWords.ToNextWord();
-                    }
-                    GetWord();
-                } else {
-                    GetStaticstic();
-                    //MessageBox.Show("YZTXDY");
-                }
-            } else {
-                string temp = this.practiceWords.CurrentWord.Word;
-                this.currentPracticeWord = "";
-                for (int i = 0; i < this.practiceWords.CurrentWord.Word.Length; i++) {
-                    if (i < this.currentInputWord.Length) {
-                        this.currentPracticeWord += " ";
+                        GetWord();
                     } else {
-                        this.currentPracticeWord += temp[i];
+                        GetStaticstic();
+                        return;
+                        //MessageBox.Show("YZTXDY");
                     }
                 }
             }
+            CmpWord();
         }
         private void sliderSeekWordIndex_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             this.practiceWords.CurrentWordIndex = seekWordIndex;
             GetWord();
         }
-        private void toggleShuffleMode_Click(object sender, RoutedEventArgs e) {
-            SwitchShuffleMode();
+        private void toggleIndicatorTop_Click(object sender, RoutedEventArgs e) {
+            if (this.toggleIndicatorTop.IsChecked == true) {
+                this.lblCurrentPosition.Content = "\u267e";
+                timer.Stop();
+            } else {
+                this.lblCurrentPosition.Content = practiceWords.CurrentWordIndex + 1;
+                timer.Start();
+            }
         }
-        private void Timer_Tick(object sender, EventArgs e) {
-            ++usingTime;
-            this.toggleShuffleMode.Content = usingTime;
-        }
-        private void toggleColorIndicator_Click(object sender, RoutedEventArgs e) {
-            SwitchLockCurrentWord();
+        private void toggleIndicatorBottom_Click(object sender, RoutedEventArgs e) {
+            ResetStaticstic();
+            if (this.toggleIndicatorBottom.IsChecked == true) {
+                this.practiceWords.ShuffleWords();
+            } else {
+                this.practiceWords = new PracticeWords(originWordsList);
+            }
+            GetWord();
         }
     }
     #endregion
@@ -151,10 +158,10 @@ namespace WordTypePracticeLite {
         private void Window_KeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
                 case Key.F1:
-                    RandomMode();
+                    OrderedMode();
                     break;
                 case Key.F2:
-                    OrderedMode();
+                    RandomMode();
                     break;
                 case Key.F5:
                     GetWordsListFile();
@@ -162,18 +169,10 @@ namespace WordTypePracticeLite {
                     OrderedMode();
                     break;
                 case Key.LeftCtrl:
-                    SwitchLockCurrentWord();
-                    break;
-                case Key.RightCtrl:
                     SwitchShuffleMode();
                     break;
-                case Key.Up:
-                    this.practiceWords.ToPreWord();
-                    GetWord();
-                    break;
-                case Key.Down:
-                    this.practiceWords.ToNextWord();
-                    GetWord();
+                case Key.RightCtrl:
+                    SwitchLockCurrentWord();
                     break;
                 case Key.Enter when (this.practiceWords.CurrentWordIndex + 1 != this.practiceWords.Size):
                     SwitchVisibilitiyOfExtraInformation();
@@ -204,7 +203,8 @@ namespace WordTypePracticeLite {
             timer.Stop();
             this.lblStarsLevel.Visibility = Visibility.Visible;
             this.txtInputString.IsReadOnly = true;
-            this.toggleColorIndicator.Background = colorTypeStatic;
+            this.toggleIndicatorBottom.IsChecked = null;
+            this.toggleIndicatorTop.IsChecked = false;
             this.lblStarsLevel.Content = practiceWords.GetStars(usingTime, correctCount);
             this.correctCount = 0;
             this.usingTime = 0;
@@ -214,13 +214,28 @@ namespace WordTypePracticeLite {
             this.usingTime = 0;
             this.correctCount = 0;
             this.seekWordIndex = 0;
-            this.toggleShuffleMode.Content = 0;
+            this.toggleIndicatorTop.Content = 0;
             this.txtInputString.IsReadOnly = false;
+            this.isCurrentWordLocked = false;
             this.currentInputWord = "";
             this.currentPracticeWord = "";
             this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
-            this.toggleColorIndicator.Content = 1;
-            this.toggleColorIndicator.Background = colorTypeReady;
+            this.lblCurrentPosition.Content = 1;
+        }
+        private void GetWordsListFile() {
+            List<string> possibleFiles = new List<string>();
+            string currentPath = Directory.GetCurrentDirectory();
+            foreach (string filePath in Directory.GetFiles(currentPath)) {
+                string fileName = System.IO.Path.GetFileName(filePath);
+                if (fileName.Contains("WordsListWP")) {
+                    possibleFiles.Add(fileName);
+                }
+            }
+            if (possibleFiles.Count > 0) {
+                currentWordListFile = possibleFiles[rnd.Next(possibleFiles.Count)];
+            } else {
+                currentWordListFile = null;
+            }
         }
         private void GetPracticeWords() {
             originWordsList = new List<WordItem>();
@@ -243,33 +258,16 @@ namespace WordTypePracticeLite {
         private void RandomMode() {
             ResetStaticstic();
             this.practiceWords.ShuffleWords();
-            this.isRandomMode = true;
             this.isCurrentWordLocked = false;
-            this.toggleShuffleMode.Background = colorShuffleMode;
+            this.isRandomMode = true;
             GetWord();
         }
         private void OrderedMode() {
             ResetStaticstic();
             this.practiceWords = new PracticeWords(originWordsList);
-            this.isRandomMode = false;
             this.isCurrentWordLocked = false;
-            this.toggleShuffleMode.Background = colorTypeStatic;
+            this.isRandomMode = false;
             GetWord();
-        }
-        private void GetWordsListFile() {
-            List<string> possibleFiles = new List<string>();
-            string currentPath = Directory.GetCurrentDirectory();
-            foreach (string filePath in Directory.GetFiles(currentPath)) {
-                string fileName = System.IO.Path.GetFileName(filePath);
-                if (fileName.Contains("WordsListWP")) {
-                    possibleFiles.Add(fileName);
-                }
-            }
-            if (possibleFiles.Count > 0) {
-                currentWordListFile = possibleFiles[rnd.Next(possibleFiles.Count)];
-            } else {
-                currentWordListFile = null;
-            }
         }
         private void SwitchVisibilitiyOfExtraInformation() {
             if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
@@ -285,24 +283,22 @@ namespace WordTypePracticeLite {
             }
         }
         private void SwitchShuffleMode() {
-            if (isRandomMode == true) {
-                RandomMode();
-                isRandomMode = false;
-            } else {
+            if (this.isRandomMode == true) {
                 OrderedMode();
-                isRandomMode = true;
+                this.isRandomMode = false;
+            } else {
+                RandomMode();
+                this.isRandomMode = true;
             }
         }
         private void SwitchLockCurrentWord() {
-            if (this.isCurrentWordLocked) {
+            if (this.isCurrentWordLocked == true) {
                 this.timer.Start();
-                this.toggleColorIndicator.Background = colorTyping;
-                this.toggleColorIndicator.Content = practiceWords.CurrentWordIndex + 1;
+                this.lblCurrentPosition.Content = practiceWords.CurrentWordIndex + 1;
                 this.isCurrentWordLocked = false;
             } else {
                 this.timer.Stop();
-                this.toggleColorIndicator.Background = colorShuffleMode;
-                this.toggleColorIndicator.Content = "\u267e";
+                this.lblCurrentPosition.Content = "\u267e";
                 this.isCurrentWordLocked = true;
             }
         }
@@ -313,9 +309,24 @@ namespace WordTypePracticeLite {
             this.lblStarsLevel.Content = this.practiceWords.CurrentWord.Meaning;
             this.lblPreWord.Content = this.practiceWords.PreWord.Word;
             this.lblNextWord.Content = this.practiceWords.NextWord.Word;
-            if (!isCurrentWordLocked) {
-                this.toggleColorIndicator.Content = this.practiceWords.CurrentWordIndex + 1;
+            if (isCurrentWordLocked == false) {
+                this.lblCurrentPosition.Content = this.practiceWords.CurrentWordIndex + 1;
             }
+        }
+        private void CmpWord() {
+            string temp = this.practiceWords.CurrentWord.Word;
+            this.currentPracticeWord = "";
+            for (int i = 0; i < this.practiceWords.CurrentWord.Word.Length; i++) {
+                if (i < this.currentInputWord.Length) {
+                    this.currentPracticeWord += " ";
+                } else {
+                    this.currentPracticeWord += temp[i];
+                }
+            }
+        }
+        private void Timer_Tick(object sender, EventArgs e) {
+            ++usingTime;
+            this.toggleIndicatorTop.Content = usingTime;
         }
     }
     #endregion

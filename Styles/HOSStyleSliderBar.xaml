@@ -4,9 +4,12 @@
     <!--Simple Simple Slider
     Similiar to ScrollBar this template uses Track to layout the draggable Thumb which has an up and down repeat button
     It uses Simple SliderThumb and SimpleScrollRepeatButtonStyle for the page up and down repeat buttons -->
-    <Style x:Key="GeneralSlider" TargetType="{x:Type Slider}">
-        <Setter Property="Background" Value="{StaticResource ColorMediumWhite}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource ColorAccent}"/>
+    <Style x:Key="HOSSliderBar" TargetType="{x:Type Slider}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <ImageBrush ImageSource="/WordTypePracticeLite;component/Resources/SeekBarSlider.png" Stretch="Fill"/>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -19,12 +22,12 @@
                         </Grid.RowDefinitions>
 
                         <!-- TickBar shows the ticks for Slider -->
-                        <TickBar Visibility="Collapsed" x:Name="TopTick" Height="10" 
+                        <TickBar Visibility="Collapsed" x:Name="TopTick"
                                  SnapsToDevicePixels="True" Placement="Top" Fill="{TemplateBinding Foreground}"/>
-                        <Border Grid.Row="1" Margin="0" x:Name="Border" Height="10" 
+                        <Border Grid.Row="1" Margin="0" x:Name="Border" 
                                 Background="{TemplateBinding Background}"  BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
-                        <TickBar Visibility="Collapsed" Grid.Row="2" x:Name="BottomTick" Height="10"
+                                BorderThickness="{TemplateBinding BorderThickness}"/>
+                        <TickBar Visibility="Collapsed" Grid.Row="2" x:Name="BottomTick"
                                  SnapsToDevicePixels="True" Placement="Bottom" Fill="{TemplateBinding Foreground}"/>
                         <!-- The Track lays out the repeat buttons and thumb -->
                         <Track Grid.Row="1" x:Name="PART_Track">
@@ -75,8 +78,8 @@
 
     <Style x:Key="GeneralSliderThumb" TargetType="{x:Type Thumb}">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
-        <Setter Property="Height" Value="15"/>
-        <Setter Property="Width" Value="10"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="20"/>
         <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.2"/>
@@ -86,15 +89,22 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Grid>
-                        <Border x:Name="Ellipse" Background="{StaticResource ColorLightBlack}" 
-                                CornerRadius="2"/>
+                        <Border x:Name="Ico">
+                            <Border.Background>
+                                <ImageBrush ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumb.png"/>
+                            </Border.Background>
+                        </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Background" TargetName="Ico">
+                                <Setter.Value>
+                                    <ImageBrush ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumb.png"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Background" Value="#000000" TargetName="Ellipse"/>
+                            <Setter Property="Background" Value="#000000" TargetName="Ico"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

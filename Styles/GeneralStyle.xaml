@@ -154,7 +154,7 @@
         <Setter Property="FontFamily" Value="Consolas"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CaretBrush" Value="{StaticResource ColorLightBlack}"/>
-        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="FontSize" Value="35"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="{StaticResource ColorTextForeground}"/>
         <Setter Property="Background" Value="Transparent"/>
