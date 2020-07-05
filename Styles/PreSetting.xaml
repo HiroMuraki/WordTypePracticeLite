@@ -11,6 +11,7 @@
     <ImageBrush x:Key="MainBorder" ImageSource="/WordTypePracticeLite;component/Resources/MainBorder.png"/>
     <ImageBrush x:Key="SeekBarSlider" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarSlider.png"/>
     <ImageBrush x:Key="SeekBarThumb" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumb.png"/>
+    <ImageBrush x:Key="SeekBarThumbFocus" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumbFocus.png"/>
     <Style x:Key="ImageStarA" TargetType="Image">
         <Setter Property="Source" Value="/WordTypePracticeLite;component/Resources/StarA.png"/>
         <Setter Property="Width" Value="30"/>

@@ -8,13 +8,7 @@
         mc:Ignorable="d" KeyDown="Window_KeyDown" MouseWheel="Window_MouseWheel"
         Title="MainWindow" Height="381" Width="512" WindowStartupLocation="CenterScreen">
     <Border CornerRadius="15"  MouseLeftButtonDown="Window_Move"
-            BorderThickness="1" Margin="5">
-        <Border.Background>
-            <ImageBrush ImageSource="Resources/MainBorder.png"/>
-        </Border.Background>
-        <Border.Effect>
-            <DropShadowEffect BlurRadius="5" ShadowDepth="5" Opacity="0.1"/>
-        </Border.Effect>
+            BorderThickness="1" Margin="5" Background="{StaticResource MainBorder}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="2.6*"/>
