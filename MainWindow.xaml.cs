@@ -201,11 +201,19 @@ namespace WordTypePracticeLite {
     public partial class MainWindow : Window {
         private void GetStaticstic() {
             timer.Stop();
-            this.lblStarsLevel.Visibility = Visibility.Visible;
             this.txtInputString.IsReadOnly = true;
             this.toggleIndicatorBottom.IsChecked = null;
             this.toggleIndicatorTop.IsChecked = false;
-            this.lblStarsLevel.Content = practiceWords.GetStars(usingTime, correctCount);
+            this.lblCurrentWordMeaning.Content = null;
+            foreach (char ch in practiceWords.GetStars(usingTime, correctCount)) {
+                Image star = new Image();
+                if (ch == '★') {
+                    star.Style = ResDict.PreSetting["ImageStarA"] as Style;
+                } else if (ch == '☆') {
+                    star.Style = ResDict.PreSetting["ImageStarB"] as Style;
+                }
+                this.panelStarsCount.Children.Add(star);
+            }
             this.correctCount = 0;
             this.usingTime = 0;
         }
@@ -219,7 +227,8 @@ namespace WordTypePracticeLite {
             this.isCurrentWordLocked = false;
             this.currentInputWord = "";
             this.currentPracticeWord = "";
-            this.lblStarsLevel.Content = practiceWords.CurrentWord.Meaning;
+            this.panelStarsCount.Children.Clear();
+            this.lblCurrentWordMeaning.Content = practiceWords.CurrentWord.Meaning;
             this.lblCurrentPosition.Content = 1;
         }
         private void GetWordsListFile() {
@@ -272,12 +281,12 @@ namespace WordTypePracticeLite {
         private void SwitchVisibilitiyOfExtraInformation() {
             if (this.sliderSeekWordIndex.Visibility == Visibility.Visible) {
                 this.sliderSeekWordIndex.Visibility = Visibility.Collapsed;
-                this.lblStarsLevel.Visibility = Visibility.Collapsed;
+                this.lblCurrentWordMeaning.Visibility = Visibility.Collapsed;
                 this.lblPreWord.Visibility = Visibility.Collapsed;
                 this.lblNextWord.Visibility = Visibility.Collapsed;
             } else {
                 this.sliderSeekWordIndex.Visibility = Visibility.Visible;
-                this.lblStarsLevel.Visibility = Visibility.Visible;
+                this.lblCurrentWordMeaning.Visibility = Visibility.Visible;
                 this.lblNextWord.Visibility = Visibility.Visible;
                 this.lblPreWord.Visibility = Visibility.Visible;
             }
@@ -306,7 +315,7 @@ namespace WordTypePracticeLite {
             this.currentInputWord = "";
             this.seekWordIndex = practiceWords.CurrentWordIndex;
             this.currentPracticeWord = this.practiceWords.CurrentWord.Word;
-            this.lblStarsLevel.Content = this.practiceWords.CurrentWord.Meaning;
+            this.lblCurrentWordMeaning.Content = this.practiceWords.CurrentWord.Meaning;
             this.lblPreWord.Content = this.practiceWords.PreWord.Word;
             this.lblNextWord.Content = this.practiceWords.NextWord.Word;
             if (isCurrentWordLocked == false) {

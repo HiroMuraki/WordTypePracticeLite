@@ -11,4 +11,16 @@
     <ImageBrush x:Key="MainBorder" ImageSource="/WordTypePracticeLite;component/Resources/MainBorder.png"/>
     <ImageBrush x:Key="SeekBarSlider" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarSlider.png"/>
     <ImageBrush x:Key="SeekBarThumb" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumb.png"/>
+    <Style x:Key="ImageStarA" TargetType="Image">
+        <Setter Property="Source" Value="/WordTypePracticeLite;component/Resources/StarA.png"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Margin" Value="2,0"/>
+    </Style>
+    <Style x:Key="ImageStarB" TargetType="Image">
+        <Setter Property="Source" Value="/WordTypePracticeLite;component/Resources/StarB.png"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Margin" Value="2,0"/>
+    </Style>
 </ResourceDictionary>

@@ -58,8 +58,12 @@
                 <ToggleButton x:Name="toggleIndicatorBottom" Grid.Column="0" Width="95" Height="95"
                               Style="{StaticResource ButtonIndicatorBottom}" Margin="12,-10,0,0"
                               Focusable="False" Click="toggleIndicatorBottom_Click"/>
-                <Label x:Name="lblStarsLevel" Content="TEST" Grid.Column="1" Style="{StaticResource GeneralLabel}"
-                       Margin="0,15,0,50" Foreground="#4e3410"/>
+                <Grid Grid.Column="1" Margin="0,15,0,50" HorizontalAlignment="Center">
+                    <Label x:Name="lblCurrentWordMeaning" Content="TEST" Style="{StaticResource GeneralLabel}"
+                           Foreground="#4e3410"/>
+                    <StackPanel x:Name="panelStarsCount" Orientation="Horizontal">
+                    </StackPanel>
+                </Grid>
                 <Label x:Name="lblCurrentPosition" Content="pos" Style="{StaticResource GeneralLabel}"
                         Margin="0,15,30,50" Grid.Column="2" Foreground="#4e3410"/>
             </Grid>
