@@ -26,7 +26,7 @@
                         <TickBar Visibility="Collapsed" Grid.Row="2" x:Name="BottomTick"
                                  SnapsToDevicePixels="True" Placement="Bottom" Fill="{TemplateBinding Foreground}"/>
                         <!-- The Track lays out the repeat buttons and thumb -->
-                        <Track Grid.Row="1" x:Name="PART_Track">
+                        <Track Grid.Row="1" x:Name="PART_Track" Margin="20,0">
                             <Track.Thumb>
                                 <Thumb Style="{DynamicResource HOSStyleSliderThumb}"/>
                             </Track.Thumb>

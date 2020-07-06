@@ -143,9 +143,9 @@ namespace WordTypePracticeLite {
         }
         public int GetScore(double timeUsing, int correctCount) {
             double timeRatio = 3 / (timeUsing / Size);
-            timeRatio = timeRatio <= 1.5 ? timeRatio : 1.5;
+            timeRatio = timeRatio <= 1.2 ? timeRatio : 1.2;
             double correctRatio = correctCount / (double)Size;
-            correctRatio = correctRatio <= 1.5 ? correctRatio : 1.5;
+            correctRatio = correctRatio <= 1.2 ? correctRatio : 1.2;
             int scores = (int)(100 * timeRatio * correctRatio);
             scores = scores <= 100 ? scores : 100;
             return scores;

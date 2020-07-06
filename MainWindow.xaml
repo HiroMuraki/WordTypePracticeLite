@@ -9,12 +9,12 @@
         Title="MainWindow" Height="381" Width="512" WindowStartupLocation="CenterScreen">
     <Border CornerRadius="15"  MouseLeftButtonDown="Window_Move"
             BorderThickness="1" Margin="5" Background="{StaticResource MainBorder}">
-        <Grid>
+        <Grid Margin="10,0,10,5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2.6*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="20,10,20,35">
+            <Grid Grid.Row="0" Margin="10,10,10,30">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="1*"/>
@@ -35,13 +35,14 @@
                                  IsHitTestVisible="False" IsReadOnly="True"
                                  Text="TEST" Foreground="#d1b585" Opacity="0.6"/>
                         <TextBox x:Name="txtInputString" Style="{StaticResource ResourceKey=TextPresent}"
-                                 TextChanged="txtInputString_TextChanged" Foreground="{StaticResource ColorLightWhite}"/>
+                                 TextChanged="txtInputString_TextChanged"/>
                     </Grid>
                     <Label x:Name="lblNextWord" Grid.Row="2" Style="{StaticResource GeneralLabel}"
                            Content="test" Foreground="{StaticResource ColorLightBlack}" FontSize="16"/>
                 </Grid>
                 <Slider x:Name="sliderSeekWordIndex" ValueChanged="sliderSeekWordIndex_ValueChanged" Grid.Row="3"
-                        Minimum="0" VerticalAlignment="Center" Style="{StaticResource HOSSliderBar}" Margin="15,0"/>
+                        Minimum="0" VerticalAlignment="Center" Style="{StaticResource HOSSliderBar}" Margin="15,0"
+                        Focusable="False"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -50,17 +51,21 @@
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <ToggleButton x:Name="toggleIndicatorBottom" Grid.Column="0" Width="95" Height="95"
-                              Style="{StaticResource ButtonIndicatorBottom}" Margin="12,-10,0,0"
+                              Style="{StaticResource ToggleIndicatorBottom}" Margin="2,-4,0,0"
                               Focusable="False" Click="toggleIndicatorBottom_Click"/>
                 <Grid Grid.Column="1" Margin="0,15,0,50" HorizontalAlignment="Center">
                     <Label x:Name="lblCurrentWordMeaning" Content="TEST" Style="{StaticResource GeneralLabel}"
                            Foreground="#4e3410"/>
-                    <StackPanel x:Name="panelStarsCount" Orientation="Horizontal">
-                    </StackPanel>
+                    <StackPanel x:Name="panelStarsCount" Orientation="Horizontal"/>
                 </Grid>
                 <Label x:Name="lblCurrentPosition" Content="pos" Style="{StaticResource GeneralLabel}"
-                        Margin="0,15,30,50" Grid.Column="2" Foreground="#4e3410"/>
+                        Margin="0,15,20,50" Grid.Column="2" Foreground="#4e3410"/>
             </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Margin="30,50">
+                <Button Style="{StaticResource ButtonClose}" Height="20" Width="20" Click="Window_Close"
+                        Focusable="False"/>
+            </StackPanel>
         </Grid>
     </Border>
 </Window>
