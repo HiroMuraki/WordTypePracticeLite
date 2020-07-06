@@ -107,11 +107,11 @@ namespace WordTypePracticeLite {
         }
         public void ShuffleWords() {
             for (int i = 0; i < this.Size; i++) {
-                int a = rnd.Next(this.Size);
-                int b = rnd.Next(this.Size);
-                WordItem t = Words[a];
-                Words[a] = Words[b];
-                Words[b] = t;
+                int indexA = i;
+                int indexB = rnd.Next(i, this.Size);
+                WordItem t = Words[indexA];
+                Words[indexA] = Words[indexB];
+                Words[indexB] = t;
             }
         }
         public void ToNextWord() {
@@ -141,13 +141,17 @@ namespace WordTypePracticeLite {
         IEnumerator IEnumerable.GetEnumerator() {
             throw new NotImplementedException();
         }
-        public string GetStars(double timeUsing, int correctCount) {
+        public int GetScore(double timeUsing, int correctCount) {
             double timeRatio = 3 / (timeUsing / Size);
-            timeRatio = timeRatio <= 1.5 ? timeRatio : 1.5;
+            timeRatio = timeRatio <= 1.2 ? timeRatio : 1.2;
             double correctRatio = correctCount / (double)Size;
-            correctRatio = correctRatio <= 1.5 ? correctRatio : 1.5;
+            correctRatio = correctRatio <= 1.2 ? correctRatio : 1.2;
             int scores = (int)(100 * timeRatio * correctRatio);
             scores = scores <= 100 ? scores : 100;
+            return scores;
+        }
+        public string GetStars(double timeUsing, int correctCount) {
+            int scores = GetScore(timeUsing, correctCount);
             return TypePricatice.GetStars(scores);
         }
     }

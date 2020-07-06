@@ -6,8 +6,11 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WordTypePracticeLite;component/Styles/PreSetting.xaml"/>
                 <ResourceDictionary Source="/WordTypePracticeLite;component/Styles/GeneralStyle.xaml"/>
                 <ResourceDictionary Source="/WordTypePracticeLite;component/Styles/GeneralSliderBar.xaml"/>
+                <ResourceDictionary Source="/WordTypePracticeLite;component/Styles/HOSStyleGeneral.xaml"/>
+                <ResourceDictionary Source="/WordTypePracticeLite;component/Styles/HOSStyleSliderBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

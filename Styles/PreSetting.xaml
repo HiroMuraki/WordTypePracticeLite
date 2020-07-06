@@ -1,0 +1,43 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:WordTypePracticeLite">
+    <SolidColorBrush x:Key="ColorShuffleMode" Color="#FF24a0ff"/>
+    <SolidColorBrush x:Key="ColorTextBackground" Color="#FF808080"/>
+    <SolidColorBrush x:Key="ColorTextForeground" Color="#FF202020"/>
+    <SolidColorBrush x:Key="ColorAccent" Color="#f9c53a"/>
+    <SolidColorBrush x:Key="ColorLightWhite" Color="#fafafa"/>
+    <SolidColorBrush x:Key="ColorMediumWhite" Color="#f0f0f0"/>
+    <SolidColorBrush x:Key="ColorLightBlack" Color="#c3c3c3"/>
+    <SolidColorBrush x:Key="ColorTypeReady" Color="#f9c53a"/>
+    <SolidColorBrush x:Key="ColorTypeStatic" Color="#d7bd8a"/>
+    <SolidColorBrush x:Key="ColorTyping" Color="#FAFAFA"/>
+    <SolidColorBrush x:Key="ColorShuffleMode2" Color="#24a0ff"/>
+    <ImageBrush x:Key="IndicatorStatic" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorStatic.png"/>
+    <ImageBrush x:Key="IndicatorNormal" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorNormal.png"/>
+    <ImageBrush x:Key="IndicatorRandom" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorRandom.png"/>
+    <ImageBrush x:Key="IndicatorFocus" ImageSource="/WordTypePracticeLite;component/Resources/IndicatorFocus.png"/>
+    <ImageBrush x:Key="ToggleNormal" ImageSource="/WordTypePracticeLite;component/Resources/ToggleNormal.png"/>
+    <ImageBrush x:Key="ToggleLock" ImageSource="/WordTypePracticeLite;component/Resources/ToggleLock.png"/>
+    <ImageBrush x:Key="ToggleFocus" ImageSource="/WordTypePracticeLite;component/Resources/ToggleFocus.png"/>
+    <ImageBrush x:Key="Close" ImageSource="/WordTypePracticeLite;component/Resources/Close.png"/>
+    <ImageBrush x:Key="CloseFocus" ImageSource="/WordTypePracticeLite;component/Resources/CloseFocus.png"/>
+    <ImageBrush x:Key="WordList" ImageSource="/WordTypePracticeLite;component/Resources/WordList.png"/>
+    <ImageBrush x:Key="WordListFocus" ImageSource="/WordTypePracticeLite;component/Resources/WordListFocus.png"/>
+    <ImageBrush x:Key="MainBorder" ImageSource="/WordTypePracticeLite;component/Resources/MainBorder.png"/>
+    <ImageBrush x:Key="MainBorder2" ImageSource="/WordTypePracticeLite;component/Resources/MainBorder2.png"/>
+    <ImageBrush x:Key="SeekBarSlider" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarSlider.png"/>
+    <ImageBrush x:Key="SeekBarThumb" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumb.png"/>
+    <ImageBrush x:Key="SeekBarThumbFocus" ImageSource="/WordTypePracticeLite;component/Resources/SeekBarThumbFocus.png"/>
+    <Style x:Key="ImageStarA" TargetType="Image">
+        <Setter Property="Source" Value="/WordTypePracticeLite;component/Resources/StarA.png"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Margin" Value="2,0"/>
+    </Style>
+    <Style x:Key="ImageStarB" TargetType="Image">
+        <Setter Property="Source" Value="/WordTypePracticeLite;component/Resources/StarB.png"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Margin" Value="2,0"/>
+    </Style>
+</ResourceDictionary>

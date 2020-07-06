@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>WordTypePracticeLite</RootNamespace>
     <AssemblyName>WordTypePracticeLite</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,9 +35,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\ICOTP %282%29.ico</ApplicationIcon>
+    <ApplicationIcon>ICO.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -60,6 +62,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="MainCode\PracticeWords.cs" />
+    <Compile Include="MainCode\ResourceDictionary.cs" />
     <Compile Include="MainCode\TypePricatice.cs" />
     <Page Include="Styles\GeneralSliderBar.xaml">
       <SubType>Designer</SubType>
@@ -81,6 +84,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Styles\HOSStyleGeneral.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\HOSStyleSliderBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\PreSetting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -109,10 +124,38 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\ICOTP.ico" />
+    <Resource Include="ICO.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\ICOTP %282%29.ico" />
+    <Resource Include="Resources\ICO.png" />
+    <Resource Include="Resources\IndicatorFocus.png" />
+    <Resource Include="Resources\IndicatorNormal.png" />
+    <Resource Include="Resources\IndicatorRandom.png" />
+    <Resource Include="Resources\IndicatorStatic.png" />
+    <Resource Include="Resources\MainBorder.png" />
+    <Resource Include="Resources\MainBorder2.png" />
+    <Resource Include="Resources\SeekBarSlider.png" />
+    <Resource Include="Resources\SeekBarThumb.png" />
+    <Resource Include="Resources\SeekBarThumbFocus.png" />
+    <Resource Include="Resources\StarA.png" />
+    <Resource Include="Resources\StarA_1.png" />
+    <Resource Include="Resources\StarB.png" />
+    <Resource Include="Resources\StarB_2.png" />
+    <Resource Include="Resources\ToggleFocus.png" />
+    <Resource Include="Resources\ToggleLock.png" />
+    <Resource Include="Resources\ToggleNormal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\hand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SeekBarSlider_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Close.png" />
+    <Resource Include="Resources\CloseFocus.png" />
+    <Resource Include="Resources\WordList.png" />
+    <Resource Include="Resources\WordListFocus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

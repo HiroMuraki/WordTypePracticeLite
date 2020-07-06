@@ -1,13 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:WordTypePracticeLite">
-    <SolidColorBrush x:Key="ColorShuffleMode" Color="#FF24a0ff"/>
-    <SolidColorBrush x:Key="ColorTextBackground" Color="#FF808080"/>
-    <SolidColorBrush x:Key="ColorTextForeground" Color="#FF202020"/>
-    <SolidColorBrush x:Key="ColorAccent" Color="#f9c53a"/>
-    <SolidColorBrush x:Key="ColorLightWhite" Color="#fafafa"/>
-    <SolidColorBrush x:Key="ColorMediumWhite" Color="#f0f0f0"/>
-    <SolidColorBrush x:Key="ColorLightBlack" Color="#c3c3c3"/>
     <Style x:Key="GeneralLabel" TargetType="Label">
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -154,11 +147,16 @@
         <Setter Property="FontFamily" Value="Consolas"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="CaretBrush" Value="{StaticResource ColorLightBlack}"/>
-        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="FontSize" Value="35"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="{StaticResource ColorTextForeground}"/>
+        <Setter Property="Foreground" Value="{StaticResource ColorTypeStatic}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="5" Opacity="0.5"/>
+            </Setter.Value>
+        </Setter>
     </Style>
     <Style x:Key="GeneralButton" TargetType="Button">
         <Setter  Property="Background"  Value="#303030"/>
