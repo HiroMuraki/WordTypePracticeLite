@@ -182,10 +182,7 @@ namespace WordTypePracticeLite {
                     SwitchLockCurrentWord();
                     break;
                 case Key.Enter when !isPracticeCompleted:
-                    SwitchVisibilitiyOfExtraInformation();
-                    if (this.isImmerseMode == true) {
-                        this.txtPracticeString.Visibility = Visibility.Visible;
-                    }
+                    SwitchImmerseMode();
                     break;
                 case Key.Enter:
                     RandomMode();
@@ -336,7 +333,6 @@ namespace WordTypePracticeLite {
             this.lblPreWord.Visibility = Visibility.Collapsed;
             this.txtPracticeString.Visibility = Visibility.Hidden;
             this.lblNextWord.Visibility = Visibility.Collapsed;
-
         }
         private void NotableMode() {
             this.sliderSeekWordIndex.Visibility = Visibility.Visible;
@@ -345,12 +341,13 @@ namespace WordTypePracticeLite {
             this.txtPracticeString.Visibility = Visibility.Visible;
             this.lblPreWord.Visibility = Visibility.Visible;
         }
-        private void SwitchVisibilitiyOfExtraInformation() {
+        private void SwitchImmerseMode() {
             if (isImmerseMode) {
                 NotableMode();
             } else {
                 ImmerseMode();
             }
+            CmpWord();
         }
         //其他
         private void LoadFile() {
